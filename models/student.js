@@ -11,21 +11,62 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Student.belongsTo(models.Addresses, { foreignKey: 'Address_Id'});
-      Student.belongsTo(models.Courses, { foreignKey: 'Course_Id'});
+      Student.belongsTo(models.Addresses, { foreignKey: 'Address_Id' });
+      Student.belongsTo(models.Courses, { foreignKey: 'Course_Id' });
     }
   }
   Student.init({
-    Name: DataTypes.STRING,
-    Email: DataTypes.STRING,
-    DOB: DataTypes.DATE,
-    Father_Name: DataTypes.STRING,
-    Gender: DataTypes.ENUM('Male', 'Female', 'Other'),
-    Address_Id: DataTypes.INTEGER,
-    Course_Id: DataTypes.INTEGER
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    Name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    Email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    DOB: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    Father_Name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    Gender: {
+      type: DataTypes.ENUM('Male', 'Female', 'Other'),
+      allowNull: false
+    },
+    Address_Id: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    Course_Id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   }, {
     sequelize,
     modelName: 'Student',
+    paranoid: true,
+    timestamps: true,
   });
   return Student;
 };

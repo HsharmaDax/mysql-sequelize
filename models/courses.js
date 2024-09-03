@@ -11,19 +11,58 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Courses.hasMany(models.Student, { foreignKey: 'Course_Id'});
+      Courses.hasMany(models.Student, { foreignKey: 'Course_Id' });
     }
   }
   Courses.init({
-    Course_Name: DataTypes.STRING,
-    Fee: DataTypes.NUMERIC,
-    Min_Year: DataTypes.INTEGER,
-    Max_Year: DataTypes.INTEGER,
-    Eligibility: DataTypes.STRING,
-    Category: DataTypes.STRING
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    Course_Name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique:true
+    },
+    Fee: {
+      type: DataTypes.NUMERIC,
+      allowNull: false
+    },
+    Min_Year: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    Max_Year: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    Eligibility: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    Category: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   }, {
     sequelize,
     modelName: 'Courses',
+    paranoid: true,
+    timestamps: true,
   });
   return Courses;
 };

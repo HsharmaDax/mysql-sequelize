@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models/index');
+const { Op } = require('sequelize');
 const { Student, Courses, Addresses } = db;
 
 router.post('/insert', async (req, res) => {
@@ -62,7 +63,7 @@ router.delete('/delete/:id', async (req, res) => {
         });
         if (DeleteStudent) {
             res.status(200).json({ message: 'Student deleted successfully' });
-        }else {
+        } else {
             res.status(404).json({ error: 'Student not found' });
         }
     } catch (error) {
@@ -89,6 +90,26 @@ router.get('/students', async (req, res) => {
     } catch (error) {
         console.error('Error fetching students with addresses:', error);
         res.status(500).json({ error: 'An error occurred while fetching data.' });
+    }
+});
+
+router.get('/deletedstudents', async (req, res) => {
+    try {
+        const allDeletedStudents = await Student.findAll({
+            where: {
+                deletedAt: {
+                    [Op.ne]: null
+                }
+            }, paranoid : false
+        });
+        if (allDeletedStudents) {
+            return res.status(201).json(allDeletedStudents);
+        } else {
+            return res.status(400).json({ message: "No student deleted" })
+        }
+    } catch (error) {
+        console.error('Error fetching deleted students:', error);
+        res.status(500).json(error);
     }
 });
 

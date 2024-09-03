@@ -11,18 +11,53 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Addresses.hasMany(models.Student, { foreignKey: 'Address_Id'});
+      Addresses.hasMany(models.Student, { foreignKey: 'Address_Id' });
     }
   }
   Addresses.init({
-    House_No: DataTypes.STRING,
-    Pin: DataTypes.INTEGER,
-    City: DataTypes.STRING,
-    State: DataTypes.STRING,
-    Country: DataTypes.STRING
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    House_No: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    Pin: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    City: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    State: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    Country: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    }
   }, {
     sequelize,
     modelName: 'Addresses',
+    paranoid: true,
+    timestamps: true,
   });
   return Addresses;
 };
