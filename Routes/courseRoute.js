@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models/index');
-const { where } = require('sequelize');
-const { attribute } = require('@sequelize/core/_non-semver-use-at-your-own-risk_/expression-builders/attribute.js');
 const { Courses, Student } = db;
 
 router.post('/insert', async (req, res) => {

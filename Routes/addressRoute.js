@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models/index');
-const { where } = require('sequelize');
 const { Addresses } = db;
 
 router.post('/insert', async (req, res) => {

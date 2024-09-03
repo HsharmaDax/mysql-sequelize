@@ -1,14 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models/index');
-const { where } = require('sequelize');
 const { Student, Courses, Addresses } = db;
 
 router.post('/insert', async (req, res) => {
     const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = req.body;
     try {
         if (!Name || !Email || !Father_Name || !DOB || !Gender || !Course_Id) {
-            return res.status(400).json({ error: 'Enter Complete Address' });
+            return res.status(400).json({ error: 'Some fields are empty' });
         }
         const existStudent = await Student.findOne({
             where: { Email: Email }
@@ -63,11 +62,11 @@ router.delete('/delete/:id', async (req, res) => {
         });
         if (DeleteStudent) {
             res.status(200).json({ message: 'Student deleted successfully' });
-        } else {
+        }else {
             res.status(404).json({ error: 'Student not found' });
         }
     } catch (error) {
-        console.log('Error deleting Student:', error);
+        console.log('Error deleting Student:', error.message);
         res.status(500).json({ error: 'Internal server error' });
     }
 })
