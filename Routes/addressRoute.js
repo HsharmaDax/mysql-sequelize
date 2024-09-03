@@ -25,17 +25,17 @@ router.put('/update/:id', async (req, res) => {
         if (!House_No && !Pin && !City && !State && !Country) {
             return res.status(400).json({ error: 'Nothing to update' });
         }
-        const address = await Addresses.findAll({ where: { id: addressId } });
-        if (!address) {
-            return res.status(404).json({ error: 'Address not found' })
-        }
         const updateAddress = await Addresses.update({
             House_No, Pin, City, State, Country
         }, {
             where: { id: addressId }
         })
-        console.log("Address Updated");
-        return res.status(200).json("Address Updated Successfully")
+        if (updateAddress) {
+            console.log("Address Updated");
+            return res.status(200).json("Address Updated Successfully");
+        } else {
+            return res.status(400).json("Address not updated")
+        }
     } catch (error) {
         console.log('Error updating address :', error);
         return res.status(500).json({ error: error.message })

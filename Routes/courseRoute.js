@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../models/index');
 const { where } = require('sequelize');
 const { attribute } = require('@sequelize/core/_non-semver-use-at-your-own-risk_/expression-builders/attribute.js');
-const { Courses , Student} = db;
+const { Courses, Student } = db;
 
 router.post('/insert', async (req, res) => {
     const { Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category } = req.body;
@@ -19,7 +19,10 @@ router.post('/insert', async (req, res) => {
             return res.status(400).json({ error: 'This course data already added !!' })
         }
         const Course = await Courses.create({ Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category });
-        res.status(201).json(Course);
+        if (Course) {
+            console.log('Course added')
+            return res.status(201).json('Course added', Course);
+        }
     } catch (error) {
         console.error('Error Inserting Course Data:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -33,15 +36,16 @@ router.put('/update/:id', async (req, res) => {
         if (!Course_Name && !Fee && !Min_Year && !Eligibility && !Category) {
             return res.status(400).json({ error: 'Nothing to update' });
         }
-        const course = await Courses.findAll({ where: { id: courseId } });
-        if (!course) {
-            return res.status(404).json({ error: 'Course not found' })
-        }
         const updateCourse = await Courses.update({
             Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category
         }, { where: { id: courseId } })
-        console.log("Course Updated");
-        return res.status(200).json("Course updated Successfully")
+        if (updateCourse) {
+            console.log("Course Updated");
+            return res.status(200).json("Course updated Successfully", updateCourse)
+        } else {
+            console.log("Course not found");
+            return res.status(404).json("Course not found")
+        }
     } catch (error) {
         console.log('Error updating Course :', error);
         return res.status(500).json({ error: error.message })
@@ -65,20 +69,20 @@ router.delete('/delete/:id', async (req, res) => {
     }
 });
 
-router.get('/allcoursewithstudent', async(req,res)=>{
+router.get('/allcoursewithstudent', async (req, res) => {
     try {
         const allCoursewithStudent = await Courses.findAll({
             attribute: ['Course_Name', 'Fee', 'Min_Year', 'Max_Year', 'Eligibility', 'Category'],
-            include:{
-                model:Student,
-                attributes : ['Name', 'Email'],
+            include: {
+                model: Student,
+                attributes: ['Name', 'Email'],
                 required: false
             },
         })
-        res.json(allCoursewithStudent);
+        res.status(200).json(allCoursewithStudent);
     } catch (error) {
         console.log('Error', error);
-        return res.status(500).json({message: error})
+        return res.status(500).json({ message: error })
     }
 })
 
