@@ -2,9 +2,9 @@ const express = require('express')
 const app = express();
 const bodyParser = require('body-parser');
 const db = require('./models/index');
-const Address = require('./Routes/addressRoute');
-const Course = require("./Routes/courseRoute");
-const Student = require("./Routes/studentRoute");
+const Address = require('./routes/addressRoute');
+const Course = require('./routes/courseRoute')
+const Student = require("./routes/studentRoute");
 const cors = require('cors')
 
 db.sequelize.authenticate()
