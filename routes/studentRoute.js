@@ -8,7 +8,7 @@ router.put('/update/:id', updateStudent);
 
 router.delete('/delete/:id', deleteStudent)
 
-router.get('/students', allStudentandAddress);
+router.get('/studen', allStudentandAddress);
 
 router.get('/deletedstudents', deletedStudents);
 
