@@ -1,7 +1,7 @@
 const db = require('../models/index');
 const { Courses, Student } = db;
 
-const InsertCourse = async (req, res) => {
+const insertCourse = async (req, res) => {
     const { Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category } = req.body;
     try {
         if (!Course_Name || !Fee || !Min_Year || !Eligibility || !Category) {
@@ -25,19 +25,19 @@ const InsertCourse = async (req, res) => {
     }
 }
 
-const UpdateCourse = async (req, res) => {
+const updateCourse = async (req, res) => {
     const courseId = req.params.id;
     const { Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category } = req.body;
     try {
         if (!Course_Name && !Fee && !Min_Year && !Eligibility && !Category) {
             return res.status(400).json({ error: 'Nothing to update' });
         }
-        const updateCourse = await Courses.update({
+        const updatedCourse = await Courses.update({
             Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category
         }, { where: { id: courseId } })
-        if (updateCourse) {
+        if (updatedCourse) {
             console.log("Course Updated");
-            return res.status(200).json("Course updated Successfully", updateCourse)
+            return res.status(200).json("Course updated Successfully", updatedCourse)
         } else {
             console.log("Course not found");
             return res.status(404).json("Course not found")
@@ -48,13 +48,13 @@ const UpdateCourse = async (req, res) => {
     }
 }
 
-const DeleteCourse = async (req, res) => {
+const deleteCourse = async (req, res) => {
     const courseId = req.params.id;
     try {
-        const DeleteCourse = await Courses.destroy({
+        const deletedCourse = await Courses.destroy({
             where: { id: courseId }
         });
-        if (DeleteCourse) {
+        if (deletedCourse) {
             res.status(200).json({ message: 'Course deleted successfully' });
         } else {
             res.status(404).json({ error: 'Course not found' });
@@ -65,7 +65,7 @@ const DeleteCourse = async (req, res) => {
     }
 }
 
-const AllCourseWithStudents = async (req, res) => {
+const allCoursesWithStudents = async (req, res) => {
     try {
         const allCoursewithStudent = await Courses.findAll({
             attribute: ['Course_Name', 'Fee', 'Min_Year', 'Max_Year', 'Eligibility', 'Category'],
@@ -82,4 +82,4 @@ const AllCourseWithStudents = async (req, res) => {
     }
 }
 
-module.exports = {InsertCourse , UpdateCourse , DeleteCourse , AllCourseWithStudents}
+module.exports = {insertCourse , updateCourse , deleteCourse , allCoursesWithStudents}

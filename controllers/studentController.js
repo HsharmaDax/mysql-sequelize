@@ -2,7 +2,7 @@ const { Op } = require('sequelize');
 const db = require('../models/index');
 const { Student, Addresses, Courses } = db;
 
-const InsertStudent = async (req, res) => {
+const insertStudent = async (req, res) => {
     const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = req.body;
     try {
         if (!Name || !Email || !Father_Name || !DOB || !Gender || !Course_Id) {
@@ -28,21 +28,21 @@ const InsertStudent = async (req, res) => {
     }
 }
 
-const UpdateStudent = async (req, res) => {
+const updateStudent = async (req, res) => {
     const studentId = req.params.id;
     const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = req.body;
     try {
         if (!Name && !Email && !Father_Name && !DOB && !Gender && !Course_Id) {
             return res.status(400).json({ error: 'Nothing to update' });
         }
-        const updateStudent = await Student.update({
+        const updatedStudent = await Student.update({
             Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id
         }, {
             where: { id: studentId }
         })
-        if (updateStudent) {
+        if (updatedStudent) {
             console.log("Student Updated Successfully");
-            return res.status(200).json(updateStudent)
+            return res.status(200).json(updatedStudent)
         } else {
             console.log("Student not Updated ");
             return res.status(401).json({ message: "Student not Updated" })
@@ -53,13 +53,13 @@ const UpdateStudent = async (req, res) => {
     }
 }
 
-const DeleteStudent = async (req, res) => {
+const deleteStudent = async (req, res) => {
     const studentId = req.params.id;
     try {
-        const deleteStudent = await Student.destroy({
+        const deletedStudent = await Student.destroy({
             where: { id: studentId }
         });
-        if (deleteStudent) {
+        if (deletedStudent) {
             res.status(200).json({ message: 'Student deleted successfully' });
         } else {
             res.status(404).json({ error: 'Student not found' });
@@ -70,7 +70,7 @@ const DeleteStudent = async (req, res) => {
     }
 }
 
-const DeletedStudents = async (req, res) => {
+const deletedStudents = async (req, res) => {
     try {
         const allDeletedStudents = await Student.findAll({
             where: {
@@ -90,7 +90,7 @@ const DeletedStudents = async (req, res) => {
     }
 }
 
-const StudentWithCourses = async (req, res) => {
+const studentWithCourses = async (req, res) => {
     try {
         const allStudents = await Student.findAll({
             attributes: ['Name', 'Email'],
@@ -112,7 +112,7 @@ const StudentWithCourses = async (req, res) => {
     }
 }
 
-const AllStudentandAddress = async (req, res) => {
+const allStudentandAddress = async (req, res) => {
     try {
         const allStudents = await Student.findAll({
             attributes: ['Name', 'Email', 'DOB', 'Father_Name', 'Gender'],
@@ -120,7 +120,6 @@ const AllStudentandAddress = async (req, res) => {
                 model: Addresses,
                 attributes: ['House_No', 'Pin', 'City', 'State', 'Country'],
                 required: false
-
             }
         });
         if (allStudents) {
@@ -134,10 +133,10 @@ const AllStudentandAddress = async (req, res) => {
     }
 }
 
-const StudentWithNoAddress = async (req, res) => {
+const studentWithNoAddress = async (req, res) => {
     try {
         const studentsWithOutAddresses = await Student.findAll({
-            attributes: ['Name', 'Email', 'DOB', 'Father_Name', 'Gender'],
+            attributes: ['Name', 'Email', 'DOB', 'Father_Name', 'Gender','Course_Id'],
             include: {
                 model: Addresses,
                 attributes: [],
@@ -158,16 +157,16 @@ const StudentWithNoAddress = async (req, res) => {
     }
 }
 
-const StudentWithAddress = async (req, res) => {
+const studentWithAddress = async (req, res) => {
     try {
         const studentsWithAddresses = await Student.findAll({
             attributes: ['Name', 'Email', 'DOB', 'Father_Name', 'Gender'],
             include: {
                 model: Addresses,
                 attributes: ['House_No', 'Pin', 'City', 'State', 'Country'],
-                required: false
+                required: true
             }, where: {
-                Address_Id: !null
+                Address_Id: {[Op.ne]: null}
             }
         });
         if (studentsWithAddresses) {
@@ -182,4 +181,4 @@ const StudentWithAddress = async (req, res) => {
     }
 }
 
-module.exports = { InsertStudent, UpdateStudent, DeleteStudent, AllStudentandAddress, DeletedStudents, StudentWithCourses, StudentWithNoAddress, StudentWithAddress }
+module.exports = { insertStudent, updateStudent, deleteStudent, allStudentandAddress, deletedStudents, studentWithCourses, studentWithNoAddress, studentWithAddress }

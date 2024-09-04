@@ -1,12 +1,12 @@
 const express = require('express');
-const { InsertAddress, UpdateAddress, DeleteAddress } = require('../controllers/addressController');
+const { insertAddress, updateAddress, deleteAddress } = require('../controllers/addressController');
 const router = express.Router();
 
 
-router.post('/insert', InsertAddress);
+router.post('/insert', insertAddress);
 
-router.put('/update/:id', UpdateAddress)
+router.put('/update/:id', updateAddress)
 
-router.delete('/delete/:id', DeleteAddress)
+router.delete('/delete/:id', deleteAddress)
 
 module.exports = router;

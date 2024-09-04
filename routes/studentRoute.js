@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const { UpdateStudent, InsertStudent, DeleteStudent, AllStudentandAddress, DeletedStudents, StudentWithCourses, StudentWithNoAddress, StudentWithAddress } = require('../controllers/studentController');
+const { updateStudent, insertStudent, deleteStudent, allStudentandAddress, deletedStudents, studentWithCourses, studentWithNoAddress, studentWithAddress } = require('../controllers/studentController');
 
-router.post('/insert', InsertStudent);
+router.post('/insert', insertStudent);
 
-router.put('/update/:id', UpdateStudent);
+router.put('/update/:id', updateStudent);
 
-router.delete('/delete/:id', DeleteStudent)
+router.delete('/delete/:id', deleteStudent)
 
-router.get('/students', AllStudentandAddress);
+router.get('/students', allStudentandAddress);
 
-router.get('/deletedstudents', DeletedStudents);
+router.get('/deletedstudents', deletedStudents);
 
-router.get('/studentswithcourse', StudentWithCourses);
+router.get('/studentswithcourse', studentWithCourses);
 
-router.get('/noaddress', StudentWithNoAddress);
+router.get('/noaddress', studentWithNoAddress);
 
-router.get('/address', StudentWithAddress);
+router.get('/address', studentWithAddress);
 
 module.exports = router;

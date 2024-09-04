@@ -1,7 +1,7 @@
 const db = require('../models/index');
 const { Addresses } = db;
 
-const InsertAddress = async (req, res) => {
+const insertAddress = async (req, res) => {
     const { House_No, Pin, City, State, Country } = req.body;
     try {
         if (!House_No || !Pin || !City || !State || !Country) {
@@ -15,19 +15,19 @@ const InsertAddress = async (req, res) => {
     }
 }
 
-const UpdateAddress = async (req, res) => {
+const updateAddress = async (req, res) => {
     const addressId = req.params.id;
     const { House_No, Pin, City, State, Country } = req.body;
     try {
         if (!House_No && !Pin && !City && !State && !Country) {
             return res.status(400).json({ error: 'Nothing to update' });
         }
-        const updateAddress = await Addresses.update({
+        const updatedAddress = await Addresses.update({
             House_No, Pin, City, State, Country
         }, {
             where: { id: addressId }
         })
-        if (updateAddress) {
+        if (updatedAddress) {
             console.log("Address Updated");
             return res.status(200).json("Address Updated Successfully");
         } else {
@@ -39,13 +39,13 @@ const UpdateAddress = async (req, res) => {
     }
 }
 
-const DeleteAddress = async (req, res) => {
+const deleteAddress = async (req, res) => {
     const addressId = req.params.id;
     try {
-        const DeleteAddress = await Addresses.destroy({
+        const deletedAddress = await Addresses.destroy({
             where: { id: addressId }
         })
-        if (DeleteAddress) {
+        if (deletedAddress) {
             res.status(200).json({ message: 'Address deleted successfully' });
         } else {
             res.status(404).json({ error: 'Address not found' });
@@ -56,4 +56,4 @@ const DeleteAddress = async (req, res) => {
     }
 }
 
-module.exports = { InsertAddress, UpdateAddress, DeleteAddress }
+module.exports = { insertAddress, updateAddress, deleteAddress }
