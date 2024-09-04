@@ -12,12 +12,12 @@ const insertCourse = async (req, res) => {
         })
         if (existCourse) {
             console.log('Course already added')
-            return res.status(400).json({ error: 'This course data already added !!' })
+            return res.status(409).json({ error: 'This course data already added !!' })
         }
         const Course = await Courses.create({ Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category });
         if (Course) {
             console.log('Course added')
-            return res.status(200).json('Course added');
+            return res.status(201).json('Course added');
         }
     } catch (error) {
         console.error('Error Inserting Course Data:', error);
@@ -55,7 +55,7 @@ const deleteCourse = async (req, res) => {
             where: { id: courseId }
         });
         if (deletedCourse) {
-            res.status(200).json({ message: 'Course deleted successfully' });
+            res.status(204).json({ message: 'Course deleted successfully' });
         } else {
             res.status(404).json({ error: 'Course not found' });
         }
@@ -75,11 +75,15 @@ const allCoursesWithStudents = async (req, res) => {
                 required: false
             },
         })
-        res.status(200).json(allCoursewithStudent);
+        if (allCoursewithStudent) {
+            res.status(200).json(allCoursewithStudent);
+        } else {
+            res.status(404).json({ message: 'No course found' })
+        }
     } catch (error) {
         console.log('Error', error);
         return res.status(500).json({ message: error })
     }
 }
 
-module.exports = {insertCourse , updateCourse , deleteCourse , allCoursesWithStudents}
+module.exports = { insertCourse, updateCourse, deleteCourse, allCoursesWithStudents }
