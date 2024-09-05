@@ -1,40 +1,38 @@
 const { Op } = require('sequelize');
 const db = require('../models/index');
+const { studentSchema } = require('../validationSchema/validateSchema');
 const { Student, Addresses, Courses } = db;
 
 const insertStudent = async (req, res) => {
-    const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = req.body;
     try {
-        if (!Name || !Email || !Father_Name || !DOB || !Gender || !Course_Id) {
-            return res.status(400).json({ error: 'Some fields are empty' });
-        }
+        const inputValidate = await studentSchema.validateAsync(req.body);
         const existStudent = await Student.findOne({
-            where: { Email: Email }
+            where: { Email: inputValidate.Email }
         })
+        const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = inputValidate;
         if (existStudent) {
             console.log('Email already registered')
-            return res.status(400).json({ error: 'Student with this email already exist' })
+            return res.status(409).json({ error: 'Student with this email already exist' })
         }
         const student = await Student.create({ Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id });
         if (student) {
             console.log('Student Added', student);
-            res.status(201).json(student);
-        } else {
-            console.log('Student not added');
+            return res.status(201).json(student);
         }
     } catch (error) {
         console.log('Error adding student:', error);
-        res.status(500).json({ error: error });
+        if (error.isJoi === true) {
+            return res.status(422).json({ error: error.message })
+        }
+        res.json({ error: error });
     }
 }
 
 const updateStudent = async (req, res) => {
     const studentId = req.params.id;
-    const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = req.body;
     try {
-        if (!Name && !Email && !Father_Name && !DOB && !Gender && !Course_Id) {
-            return res.status(400).json({ error: 'Nothing to update' });
-        }
+        const inputUpdateValidation = await updateCourseSchema.validateAsync(req.body);
+        const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = inputUpdateValidation;
         const updatedStudent = await Student.update({
             Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id
         }, {
@@ -45,10 +43,13 @@ const updateStudent = async (req, res) => {
             return res.status(200).json(updatedStudent)
         } else {
             console.log("Student not Updated ");
-            return res.status(401).json({ message: "Student not Updated" })
+            return res.status(404).json({ message: "Student not Found" })
         }
     } catch (error) {
         console.log('Error updating Course :', error);
+        if (error.isJoi === true) {
+            return res.status(422).json({ error: error.message })
+        }
         return res.status(500).json({ error: error.message })
     }
 }
@@ -60,7 +61,7 @@ const deleteStudent = async (req, res) => {
             where: { id: studentId }
         });
         if (deletedStudent) {
-            res.status(200).json({ message: 'Student deleted successfully' });
+            res.status(204).json({ message: 'Student deleted successfully' });
         } else {
             res.status(404).json({ error: 'Student not found' });
         }
@@ -80,9 +81,9 @@ const deletedStudents = async (req, res) => {
             }, paranoid: false
         });
         if (allDeletedStudents) {
-            return res.status(201).json(allDeletedStudents);
+            res.status(200).json(allDeletedStudents);
         } else {
-            return res.status(400).json({ message: "No student deleted" })
+            res.status(404).json({ message: "No student found" })
         }
     } catch (error) {
         console.error('Error fetching deleted students:', error);
@@ -104,7 +105,7 @@ const studentWithCourses = async (req, res) => {
             console.log(allStudents);
             return res.status(200).json(allStudents);
         } else {
-            return res.status(400).json({ message: "No student found" })
+            return res.status(404).json({ message: "No student found" })
         }
     } catch (error) {
         console.error('Error fetching students with addresses:', error);
@@ -123,9 +124,9 @@ const allStudentandAddress = async (req, res) => {
             }
         });
         if (allStudents) {
-            return res.status(201).json(allStudents);
+            return res.status(200).json(allStudents);
         } else {
-            return res.status(400).json({ message: "No student found" })
+            return res.status(404).json({ message: "No student found" })
         }
     } catch (error) {
         console.error('Error fetching students with addresses:', error);
@@ -136,7 +137,7 @@ const allStudentandAddress = async (req, res) => {
 const studentWithNoAddress = async (req, res) => {
     try {
         const studentsWithOutAddresses = await Student.findAll({
-            attributes: ['Name', 'Email', 'DOB', 'Father_Name', 'Gender','Course_Id'],
+            attributes: ['Name', 'Email', 'DOB', 'Father_Name', 'Gender', 'Course_Id'],
             include: {
                 model: Addresses,
                 attributes: [],
@@ -147,9 +148,9 @@ const studentWithNoAddress = async (req, res) => {
         });
         if (studentsWithOutAddresses) {
             console.log(studentsWithOutAddresses);
-            return res.status(201).json(studentsWithOutAddresses);
+            return res.status(200).json(studentsWithOutAddresses);
         } else {
-            return res.status(400).json({ message: "No student found" })
+            return res.status(404).json({ message: "No student found" })
         }
     } catch (error) {
         console.error('Error fetching students without addresses:', error);
@@ -166,14 +167,14 @@ const studentWithAddress = async (req, res) => {
                 attributes: ['House_No', 'Pin', 'City', 'State', 'Country'],
                 required: true
             }, where: {
-                Address_Id: {[Op.ne]: null}
+                Address_Id: { [Op.ne]: null }
             }
         });
         if (studentsWithAddresses) {
             console.log(studentsWithAddresses);
-            return res.status(201).json(studentsWithAddresses);
+            return res.status(200).json(studentsWithAddresses);
         } else {
-            return res.status(400).json({ message: "No student found" })
+            return res.status(404).json({ message: "No student found" })
         }
     } catch (error) {
         console.error('Error fetching students without addresses:', error);
