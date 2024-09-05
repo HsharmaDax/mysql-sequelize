@@ -1,5 +1,5 @@
 const db = require('../models/index');
-const { courseSchema, updateCourseSchema } = require('./validateSchema');
+const { courseSchema, updateCourseSchema } = require('../validationSchema/validateSchema');
 const { Courses, Student } = db;
 
 const insertCourse = async (req, res) => {

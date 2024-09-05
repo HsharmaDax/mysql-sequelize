@@ -1,6 +1,6 @@
 const db = require('../models/index');
 const { Addresses } = db;
-const { addressSchema, updateAddressSchema } = require('./validateSchema')
+const { addressSchema, updateAddressSchema } = require('../validationSchema/validateSchema')
 
 const insertAddress = async (req, res) => {
     try {

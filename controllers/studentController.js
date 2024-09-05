@@ -1,6 +1,6 @@
 const { Op } = require('sequelize');
 const db = require('../models/index');
-const { studentSchema } = require('./validateSchema');
+const { studentSchema } = require('../validationSchema/validateSchema');
 const { Student, Addresses, Courses } = db;
 
 const insertStudent = async (req, res) => {

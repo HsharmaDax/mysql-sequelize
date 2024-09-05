@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models/index');
-const { transactionSchema } = require('../controllers/validateSchema');
+const { transactionSchema } = require('../validationSchema/validateSchema');
 const { Student, Addresses } = db;
 
 router.post('/addAddressandStudent', async (req, res) => {
