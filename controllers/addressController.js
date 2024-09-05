@@ -1,29 +1,29 @@
 const db = require('../models/index');
 const { Addresses } = db;
+const { addressSchema, updateAddressSchema } = require('./validateSchema')
 
 const insertAddress = async (req, res) => {
-    const { House_No, Pin, City, State, Country } = req.body;
     try {
-        if (!House_No || !Pin || !City || !State || !Country) {
-            return res.status(400).json({ error: 'Enter Complete Address' });
-        }
+        const inputValidate = await addressSchema.validateAsync(req.body);
+        const { House_No, Pin, City, State, Country } = inputValidate;
         const address = await Addresses.create({ House_No, Pin, City, State, Country });
         if (address) {
             return res.status(201).json(address);
         }
     } catch (error) {
         console.error('Error adding address to db:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        if (error.isJoi === true) {
+            return res.status(422).json({ error: error.message })
+        }
+        return res.status(500).json({ error: 'Internal server error' });
     }
 }
 
 const updateAddress = async (req, res) => {
     const addressId = req.params.id;
-    const { House_No, Pin, City, State, Country } = req.body;
     try {
-        if (!House_No && !Pin && !City && !State && !Country) {
-            return res.status(400).json({ error: 'Nothing to update' });
-        }
+        const inputUpdateValidation = await updateAddressSchema.validateAsync(req.body);
+        const { House_No, Pin, City, State, Country } = inputUpdateValidation;
         const updatedAddress = await Addresses.update({
             House_No, Pin, City, State, Country
         }, {
@@ -37,6 +37,9 @@ const updateAddress = async (req, res) => {
         }
     } catch (error) {
         console.log('Error updating address :', error);
+        if (error.isJoi === true) {
+            return res.status(422).json({ error: error.message })
+        }
         return res.status(500).json({ error: error.message })
     }
 }

@@ -1,16 +1,15 @@
 const { Op } = require('sequelize');
 const db = require('../models/index');
+const { studentSchema } = require('./validateSchema');
 const { Student, Addresses, Courses } = db;
 
 const insertStudent = async (req, res) => {
-    const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = req.body;
     try {
-        if (!Name || !Email || !Father_Name || !DOB || !Gender || !Course_Id) {
-            return res.status(400).json({ error: 'Some fields are empty' });
-        }
+        const inputValidate = await studentSchema.validateAsync(req.body);
         const existStudent = await Student.findOne({
-            where: { Email: Email }
+            where: { Email: inputValidate.Email }
         })
+        const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = inputValidate;
         if (existStudent) {
             console.log('Email already registered')
             return res.status(409).json({ error: 'Student with this email already exist' })
@@ -22,17 +21,18 @@ const insertStudent = async (req, res) => {
         }
     } catch (error) {
         console.log('Error adding student:', error);
-        res.status(500).json({ error: error });
+        if (error.isJoi === true) {
+            return res.status(422).json({ error: error.message })
+        }
+        res.json({ error: error });
     }
 }
 
 const updateStudent = async (req, res) => {
     const studentId = req.params.id;
-    const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = req.body;
     try {
-        if (!Name && !Email && !Father_Name && !DOB && !Gender && !Course_Id) {
-            return res.status(400).json({ error: 'Nothing to update' });
-        }
+        const inputUpdateValidation = await updateCourseSchema.validateAsync(req.body);
+        const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = inputUpdateValidation;
         const updatedStudent = await Student.update({
             Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id
         }, {
@@ -47,6 +47,9 @@ const updateStudent = async (req, res) => {
         }
     } catch (error) {
         console.log('Error updating Course :', error);
+        if (error.isJoi === true) {
+            return res.status(422).json({ error: error.message })
+        }
         return res.status(500).json({ error: error.message })
     }
 }
@@ -134,7 +137,7 @@ const allStudentandAddress = async (req, res) => {
 const studentWithNoAddress = async (req, res) => {
     try {
         const studentsWithOutAddresses = await Student.findAll({
-            attributes: ['Name', 'Email', 'DOB', 'Father_Name', 'Gender','Course_Id'],
+            attributes: ['Name', 'Email', 'DOB', 'Father_Name', 'Gender', 'Course_Id'],
             include: {
                 model: Addresses,
                 attributes: [],
@@ -164,7 +167,7 @@ const studentWithAddress = async (req, res) => {
                 attributes: ['House_No', 'Pin', 'City', 'State', 'Country'],
                 required: true
             }, where: {
-                Address_Id: {[Op.ne]: null}
+                Address_Id: { [Op.ne]: null }
             }
         });
         if (studentsWithAddresses) {

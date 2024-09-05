@@ -1,15 +1,15 @@
 const db = require('../models/index');
+const { courseSchema, updateCourseSchema } = require('./validateSchema');
 const { Courses, Student } = db;
 
 const insertCourse = async (req, res) => {
-    const { Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category } = req.body;
     try {
-        if (!Course_Name || !Fee || !Min_Year || !Eligibility || !Category) {
-            return res.status(400).json({ error: 'Enter Correct Infromation For Course' });
-        }
+        const inputValidate = await courseSchema.validateAsync(req.body);
+        const { Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category } = inputValidate;
         const existCourse = await Courses.findOne({
             where: { Course_Name: Course_Name }
         })
+
         if (existCourse) {
             console.log('Course already added')
             return res.status(409).json({ error: 'This course data already added !!' })
@@ -21,17 +21,18 @@ const insertCourse = async (req, res) => {
         }
     } catch (error) {
         console.error('Error Inserting Course Data:', error);
+        if (error.isJoi === true) {
+            return res.status(422).json({ error: error.message })
+        }
         res.status(500).json({ error: 'Internal server error' });
     }
 }
 
 const updateCourse = async (req, res) => {
     const courseId = req.params.id;
-    const { Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category } = req.body;
     try {
-        if (!Course_Name && !Fee && !Min_Year && !Eligibility && !Category) {
-            return res.status(400).json({ error: 'Nothing to update' });
-        }
+        const inputUpdateValidation = await updateCourseSchema.validateAsync(req.body);
+        const { Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category } = inputUpdateValidation;
         const updatedCourse = await Courses.update({
             Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category
         }, { where: { id: courseId } })
@@ -44,6 +45,9 @@ const updateCourse = async (req, res) => {
         }
     } catch (error) {
         console.log('Error updating Course :', error);
+        if (error.isJoi === true) {
+            return res.status(422).json({ error: error.message })
+        }
         return res.status(500).json({ error: error.message })
     }
 }
