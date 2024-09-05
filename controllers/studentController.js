@@ -24,7 +24,7 @@ const insertStudent = async (req, res) => {
         if (error.isJoi === true) {
             return res.status(422).json({ error: error.message })
         }
-        res.json({ error: error });
+        res.status(500).json({ error: error });
     }
 }
 
