@@ -1,12 +1,13 @@
 const express = require('express');
 const { insertAddress, updateAddress, deleteAddress } = require('../controllers/addressController');
-const { addressInputValidate, addressUpdateValidate } = require('../middleware/addressValidation');
+const { inputValidate } = require('../middleware/courseValidation');
+const { addressSchema, updateAddressSchema } = require('../validationSchema/validateSchema');
 const router = express.Router();
 
 
-router.post('/insert', addressInputValidate, insertAddress);
+router.post('/insert', inputValidate(addressSchema), insertAddress);
 
-router.put('/update/:id', addressUpdateValidate, updateAddress)
+router.put('/update/:id', inputValidate(updateAddressSchema), updateAddress)
 
 router.delete('/delete/:id', deleteAddress)
 

@@ -1,22 +1,13 @@
-const { updateCourseSchema, courseSchema } = require("../validationSchema/validateSchema")
 
-
-const courseInputValidate = (req, res, next) => {
-    const { error } = courseSchema.validate(req.body);
-    if (error) {
-        console.error(error.message);
-        return res.status(422).json(error.message)
+const inputValidate = (schema) => {
+    return (req, res, next) => {
+        const { error } = schema.validate(req.body);
+        if (error) {
+            console.error(error.message);
+            return res.status(422).json(error.message)
+        }
+        next();
     }
-    next();
 }
 
-const courseUpdateValidate = async (req, res, next) => {
-    const { error } = updateCourseSchema.validate(req.body);
-    if (error) {
-        console.error(error.message);
-        return res.status(422).json(error.message)
-    }
-    next();
-}
-
-module.exports = { courseInputValidate, courseUpdateValidate }
+module.exports = { inputValidate }
