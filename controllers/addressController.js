@@ -1,14 +1,15 @@
 const db = require('../models/index');
-const { Addresses } = db;
+const addAddress = require('../modularGenerator/addressModular');
+const { Address } = db;
 const { addressSchema, updateAddressSchema } = require('../validationSchema/validateSchema')
 
 const insertAddress = async (req, res) => {
     try {
         const inputValidate = await addressSchema.validateAsync(req.body);
         const { House_No, Pin, City, State, Country } = inputValidate;
-        const address = await Addresses.create({ House_No, Pin, City, State, Country });
+        const address = addAddress({ House_No, Pin, City, State, Country });
         if (address) {
-            return res.status(201).json(address);
+            return res.status(201).json({Message:"Address added successfully"});
         }
     } catch (error) {
         console.error('Error adding address to db:', error);
@@ -24,7 +25,7 @@ const updateAddress = async (req, res) => {
     try {
         const inputUpdateValidation = await updateAddressSchema.validateAsync(req.body);
         const { House_No, Pin, City, State, Country } = inputUpdateValidation;
-        const updatedAddress = await Addresses.update({
+        const updatedAddress = await Address.update({
             House_No, Pin, City, State, Country
         }, {
             where: { id: addressId }
@@ -47,7 +48,7 @@ const updateAddress = async (req, res) => {
 const deleteAddress = async (req, res) => {
     const addressId = req.params.id;
     try {
-        const deletedAddress = await Addresses.destroy({
+        const deletedAddress = await Address.destroy({
             where: { id: addressId }
         })
         if (deletedAddress) {

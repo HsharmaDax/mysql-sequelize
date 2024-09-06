@@ -1,7 +1,7 @@
 const { Op } = require('sequelize');
 const db = require('../models/index');
 const { studentSchema } = require('../validationSchema/validateSchema');
-const { Student, Addresses, Courses } = db;
+const { Student, Address, Course } = db;
 
 const insertStudent = async (req, res) => {
     try {
@@ -96,7 +96,7 @@ const studentWithCourses = async (req, res) => {
         const allStudents = await Student.findAll({
             attributes: ['Name', 'Email'],
             include: {
-                model: Courses,
+                model: Course,
                 attributes: ['Course_Name', 'Fee', 'Min_Year', 'Max_Year', 'Eligibility', 'Category'],
                 required: false
             }
@@ -118,7 +118,7 @@ const allStudentandAddress = async (req, res) => {
         const allStudents = await Student.findAll({
             attributes: ['Name', 'Email', 'DOB', 'Father_Name', 'Gender'],
             include: {
-                model: Addresses,
+                model: Address,
                 attributes: ['House_No', 'Pin', 'City', 'State', 'Country'],
                 required: false
             }
@@ -139,7 +139,7 @@ const studentWithNoAddress = async (req, res) => {
         const studentsWithOutAddresses = await Student.findAll({
             attributes: ['Name', 'Email', 'DOB', 'Father_Name', 'Gender', 'Course_Id'],
             include: {
-                model: Addresses,
+                model: Address,
                 attributes: [],
                 required: false
             }, where: {
@@ -163,7 +163,7 @@ const studentWithAddress = async (req, res) => {
         const studentsWithAddresses = await Student.findAll({
             attributes: ['Name', 'Email', 'DOB', 'Father_Name', 'Gender'],
             include: {
-                model: Addresses,
+                model: Address,
                 attributes: ['House_No', 'Pin', 'City', 'State', 'Country'],
                 required: true
             }, where: {

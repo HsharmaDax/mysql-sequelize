@@ -1,12 +1,12 @@
 const db = require('../models/index');
 const { courseSchema, updateCourseSchema } = require('../validationSchema/validateSchema');
-const { Courses, Student } = db;
+const { Course, Student } = db;
 
 const insertCourse = async (req, res) => {
     try {
         const inputValidate = await courseSchema.validateAsync(req.body);
         const { Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category } = inputValidate;
-        const existCourse = await Courses.findOne({
+        const existCourse = await Course.findOne({
             where: { Course_Name: Course_Name }
         })
 
@@ -14,7 +14,7 @@ const insertCourse = async (req, res) => {
             console.log('Course already added')
             return res.status(409).json({ error: 'This course data already added !!' })
         }
-        const Course = await Courses.create({ Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category });
+        const Course = await Course.create({ Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category });
         if (Course) {
             console.log('Course added')
             return res.status(201).json('Course added');
@@ -33,7 +33,7 @@ const updateCourse = async (req, res) => {
     try {
         const inputUpdateValidation = await updateCourseSchema.validateAsync(req.body);
         const { Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category } = inputUpdateValidation;
-        const updatedCourse = await Courses.update({
+        const updatedCourse = await Course.update({
             Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category
         }, { where: { id: courseId } })
         if (updatedCourse) {
@@ -55,7 +55,7 @@ const updateCourse = async (req, res) => {
 const deleteCourse = async (req, res) => {
     const courseId = req.params.id;
     try {
-        const deletedCourse = await Courses.destroy({
+        const deletedCourse = await Course.destroy({
             where: { id: courseId }
         });
         if (deletedCourse) {
@@ -71,7 +71,7 @@ const deleteCourse = async (req, res) => {
 
 const allCoursesWithStudents = async (req, res) => {
     try {
-        const allCoursewithStudent = await Courses.findAll({
+        const allCoursewithStudent = await Course.findAll({
             attribute: ['Course_Name', 'Fee', 'Min_Year', 'Max_Year', 'Eligibility', 'Category'],
             include: {
                 model: Student,
