@@ -1,13 +1,14 @@
 const express = require('express');
 const { insertCourse, updateCourse, deleteCourse, allCoursesWithStudents } = require('../controllers/courseController');
 const { inputValidate } = require('../middleware/courseValidation');
-const { updateCourseSchema, courseSchema } = require("../validationSchema/courseValidationSchema")
+const { updateCourseSchema, courseSchema } = require("../validationSchema/courseValidationSchema");
+const idSchema = require('../validationSchema/idValidationSchema');
 const router = express.Router();
 
 
 router.post('/insert', inputValidate(courseSchema), insertCourse);
 
-router.put('/update/:id', inputValidate(updateCourseSchema), updateCourse);
+router.put('/update/:id', inputValidate(updateCourseSchema, idSchema), updateCourse);
 
 router.delete('/delete/:id', deleteCourse);
 
