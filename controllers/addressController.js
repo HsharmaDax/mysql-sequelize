@@ -1,35 +1,24 @@
 const db = require('../models/index');
-const addAddress = require('../modularGenerator/addressModular');
-const { Address } = db;
-const { addressSchema, updateAddressSchema } = require('../validationSchema/validateSchema')
+const { addAddress, editAddress, removeAddress } = require('../modularGenerator/addressModular')
 
 const insertAddress = async (req, res) => {
     try {
-        const inputValidate = await addressSchema.validateAsync(req.body);
-        const { House_No, Pin, City, State, Country } = inputValidate;
-        const address = addAddress({ House_No, Pin, City, State, Country });
+        const { House_No, Pin, City, State, Country } = req.body;
+        const address = await addAddress({ House_No, Pin, City, State, Country });
         if (address) {
-            return res.status(201).json({Message:"Address added successfully"});
+            return res.status(201).json(address);
         }
     } catch (error) {
         console.error('Error adding address to db:', error);
-        if (error.isJoi === true) {
-            return res.status(422).json({ error: error.message })
-        }
         return res.status(500).json({ error: 'Internal server error' });
     }
 }
 
 const updateAddress = async (req, res) => {
     const addressId = req.params.id;
+    const { House_No, Pin, City, State, Country } = req.body;
     try {
-        const inputUpdateValidation = await updateAddressSchema.validateAsync(req.body);
-        const { House_No, Pin, City, State, Country } = inputUpdateValidation;
-        const updatedAddress = await Address.update({
-            House_No, Pin, City, State, Country
-        }, {
-            where: { id: addressId }
-        })
+        const updatedAddress = await editAddress({ House_No, Pin, City, State, Country, addressId })
         if (updatedAddress) {
             console.log("Address Updated");
             res.status(200).json("Address Updated Successfully");
@@ -38,9 +27,6 @@ const updateAddress = async (req, res) => {
         }
     } catch (error) {
         console.log('Error updating address :', error);
-        if (error.isJoi === true) {
-            return res.status(422).json({ error: error.message })
-        }
         return res.status(500).json({ error: error.message })
     }
 }
@@ -48,9 +34,7 @@ const updateAddress = async (req, res) => {
 const deleteAddress = async (req, res) => {
     const addressId = req.params.id;
     try {
-        const deletedAddress = await Address.destroy({
-            where: { id: addressId }
-        })
+        const deletedAddress = await removeAddress(addressId);
         if (deletedAddress) {
             res.status(204).json({ message: 'Address deleted successfully' });
         } else {
