@@ -1,7 +1,7 @@
 const express = require('express');
 const { insertCourse, updateCourse, deleteCourse, allCoursesWithStudents } = require('../controllers/courseController');
 const { inputValidate } = require('../middleware/courseValidation');
-const { updateCourseSchema, courseSchema } = require("../validationSchema/validateSchema")
+const { updateCourseSchema, courseSchema } = require("../validationSchema/courseValidationSchema")
 const router = express.Router();
 
 

@@ -1,6 +1,5 @@
 const { Op } = require('sequelize');
 const db = require('../models/index');
-const { studentSchema } = require('../validationSchema/validateSchema');
 const { addStudent, editStudent, removeStudent } = require('../modularGenerator/studentModular');
 const { Student, Address, Course } = db;
 

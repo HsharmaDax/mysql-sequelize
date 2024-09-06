@@ -4,7 +4,7 @@ const inputValidate = (schema) => {
         const { error } = schema.validate(req.body);
         if (error) {
             console.error(error.message);
-            return res.status(422).json(error.message)
+            return res.status(400).json({error: 'Input data type is not correct'})
         }
         next();
     }

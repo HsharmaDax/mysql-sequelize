@@ -1,7 +1,7 @@
 const express = require('express');
 const { insertAddress, updateAddress, deleteAddress } = require('../controllers/addressController');
 const { inputValidate } = require('../middleware/courseValidation');
-const { addressSchema, updateAddressSchema } = require('../validationSchema/validateSchema');
+const { addressSchema, updateAddressSchema } = require('../validationSchema/addressValidationSchema');
 const router = express.Router();
 
 

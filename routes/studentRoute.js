@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { updateStudent, insertStudent, deleteStudent, allStudentandAddress, deletedStudents, studentWithCourses, studentWithNoAddress, studentWithAddress } = require('../controllers/studentController');
 const { inputValidate } = require('../middleware/courseValidation');
-const { studentSchema, updateStudentSchema } = require('../validationSchema/validateSchema');
+const { studentSchema, updateStudentSchema } = require('../validationSchema/studentValidationSchema');
 
 router.post('/insert', inputValidate(studentSchema), insertStudent);
 
