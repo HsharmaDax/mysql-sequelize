@@ -1,4 +1,3 @@
-const { where } = require('sequelize');
 const db = require('../models/index');
 const { Address } = db;
 const { addAddress, editAddress, removeAddress } = require('../modularGenerator/addressModular')

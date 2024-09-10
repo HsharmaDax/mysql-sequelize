@@ -1,3 +1,4 @@
+const { where } = require('sequelize');
 const db = require('../models/index')
 const { Course, Student } = db;
 const { addCourse, editCourse, removeCourse } = require('../modularGenerator/courseModular');
@@ -26,13 +27,20 @@ const insertCourse = async (req, res) => {
 const updateCourse = async (req, res) => {
     const courseId = req.params.id;
     try {
-        const { Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category } = req.body;
-        const updatedCourse = await editCourse({ Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category, courseId })
-        if (updatedCourse) {
-            console.log("Course Updated");
-            return res.status(200).json("Course updated Successfully", updatedCourse)
+        const existCourse = await Course.findOne({
+            where: { id: courseId }
+        })
+        if (existCourse) {
+            const { Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category } = req.body;
+            const updatedCourse = await editCourse({ Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category, courseId })
+            if (updatedCourse) {
+                console.log("Course Updated");
+                return res.status(200).json("Course updated Successfully", updatedCourse)
+            } else {
+                console.log("Course not found");
+                return res.status(404).json("Course not found")
+            }
         } else {
-            console.log("Course not found");
             return res.status(404).json("Course not found")
         }
     } catch (error) {
@@ -44,7 +52,7 @@ const updateCourse = async (req, res) => {
 const deleteCourse = async (req, res) => {
     const courseId = req.params.id;
     try {
-        const deletedCourse = await removeCourse(courseId)
+        const deletedCourse = await removeCourse(courseId);
         if (deletedCourse) {
             res.status(204).json({ message: 'Course deleted successfully' });
         } else {

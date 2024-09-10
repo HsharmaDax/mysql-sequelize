@@ -9,6 +9,6 @@ router.post('/insert', inputValidate(addressSchema), insertAddress);
 
 router.put('/update/:id', inputValidate(updateAddressSchema), updateAddress)
 
-router.delete('/delete/:id', deleteAddress)
+router.delete('/delete/:id',inputValidate(), deleteAddress)
 
 module.exports = router;
