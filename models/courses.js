@@ -60,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
-    modelName: 'Courses',
+    modelName: 'Course',
     paranoid: true,
     timestamps: true,
   });

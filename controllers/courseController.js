@@ -1,29 +1,24 @@
-const db = require('../models/index');
-const { courseSchema, updateCourseSchema } = require('../validationSchema/validateSchema');
-const { Courses, Student } = db;
+const db = require('../models/index')
+const { Course, Student } = db;
+const { addCourse, editCourse, removeCourse } = require('../modularGenerator/courseModular');
 
 const insertCourse = async (req, res) => {
     try {
-        const inputValidate = await courseSchema.validateAsync(req.body);
-        const { Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category } = inputValidate;
-        const existCourse = await Courses.findOne({
+        const { Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category } = req.body;
+        const existCourse = await Course.findOne({
             where: { Course_Name: Course_Name }
         })
-
         if (existCourse) {
             console.log('Course already added')
             return res.status(409).json({ error: 'This course data already added !!' })
         }
-        const Course = await Courses.create({ Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category });
-        if (Course) {
+        const addedCourse = await addCourse({ Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category });
+        if (addedCourse) {
             console.log('Course added')
             return res.status(201).json('Course added');
         }
     } catch (error) {
         console.error('Error Inserting Course Data:', error);
-        if (error.isJoi === true) {
-            return res.status(422).json({ error: error.message })
-        }
         res.status(500).json({ error: 'Internal server error' });
     }
 }
@@ -31,11 +26,8 @@ const insertCourse = async (req, res) => {
 const updateCourse = async (req, res) => {
     const courseId = req.params.id;
     try {
-        const inputUpdateValidation = await updateCourseSchema.validateAsync(req.body);
-        const { Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category } = inputUpdateValidation;
-        const updatedCourse = await Courses.update({
-            Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category
-        }, { where: { id: courseId } })
+        const { Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category } = req.body;
+        const updatedCourse = await editCourse({ Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category, courseId })
         if (updatedCourse) {
             console.log("Course Updated");
             return res.status(200).json("Course updated Successfully", updatedCourse)
@@ -44,10 +36,7 @@ const updateCourse = async (req, res) => {
             return res.status(404).json("Course not found")
         }
     } catch (error) {
-        console.log('Error updating Course :', error);
-        if (error.isJoi === true) {
-            return res.status(422).json({ error: error.message })
-        }
+        console.log('Error updating Course :', error)
         return res.status(500).json({ error: error.message })
     }
 }
@@ -55,9 +44,7 @@ const updateCourse = async (req, res) => {
 const deleteCourse = async (req, res) => {
     const courseId = req.params.id;
     try {
-        const deletedCourse = await Courses.destroy({
-            where: { id: courseId }
-        });
+        const deletedCourse = await removeCourse(courseId)
         if (deletedCourse) {
             res.status(204).json({ message: 'Course deleted successfully' });
         } else {
@@ -71,7 +58,7 @@ const deleteCourse = async (req, res) => {
 
 const allCoursesWithStudents = async (req, res) => {
     try {
-        const allCoursewithStudent = await Courses.findAll({
+        const allCoursewithStudent = await Course.findAll({
             attribute: ['Course_Name', 'Fee', 'Min_Year', 'Max_Year', 'Eligibility', 'Category'],
             include: {
                 model: Student,

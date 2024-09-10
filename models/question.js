@@ -3,50 +3,45 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Addresses extends Model {
+  class Question extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Addresses.hasMany(models.Student, { foreignKey: 'Address_Id' });
+      Question.hasMany(models.Answer, { foreignKey: 'Question_Id' });
+      Question.belongsTo(models.Student, { foreignKey: 'Student_Id' });
     }
   }
-  Addresses.init({
+  Question.init({
     id: {
-      type: DataTypes.INTEGER,
       allowNull: false,
+      autoIncrement: true,
       primaryKey: true,
-      autoIncrement: true
+      type: DataTypes.INTEGER
     },
-    House_No: {
-      type: DataTypes.STRING,
+    Question: {
       allowNull: false,
+      type: DataTypes.STRING
     },
-    Pin: {
+    Student_Id: {
+      allowNull: false,
       type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    City: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    State: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    Country: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      references: {
+        model: 'Students',
+        key: 'id'
+      },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
     },
     createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false
+      allowNull: false,
+      type: DataTypes.DATE
     },
     updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: false
+      allowNull: false,
+      type: DataTypes.DATE
     },
     deletedAt: {
       type: DataTypes.DATE,
@@ -54,9 +49,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Address',
+    modelName: 'Question',
     paranoid: true,
     timestamps: true,
   });
-  return Addresses;
+  return Question;
 };

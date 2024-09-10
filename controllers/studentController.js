@@ -1,55 +1,50 @@
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
 const db = require('../models/index');
-const { studentSchema } = require('../validationSchema/validateSchema');
-const { Student, Addresses, Courses } = db;
+const { addStudent, editStudent, removeStudent } = require('../modularGenerator/studentModular');
+const { Student, Address, Course } = db;
 
 const insertStudent = async (req, res) => {
     try {
-        const inputValidate = await studentSchema.validateAsync(req.body);
+        const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = req.body;
         const existStudent = await Student.findOne({
-            where: { Email: inputValidate.Email }
+            where: { Email: Email }
         })
-        const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = inputValidate;
         if (existStudent) {
             console.log('Email already registered')
             return res.status(409).json({ error: 'Student with this email already exist' })
         }
-        const student = await Student.create({ Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id });
+        const student = await addStudent({ Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id })
         if (student) {
             console.log('Student Added', student);
             return res.status(201).json(student);
         }
     } catch (error) {
         console.log('Error adding student:', error);
-        if (error.isJoi === true) {
-            return res.status(422).json({ error: error.message })
-        }
-        res.json({ error: error });
+        res.status(500).json({ error: error });
     }
 }
 
 const updateStudent = async (req, res) => {
     const studentId = req.params.id;
+    const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = req.body;
     try {
-        const inputUpdateValidation = await updateCourseSchema.validateAsync(req.body);
-        const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = inputUpdateValidation;
-        const updatedStudent = await Student.update({
-            Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id
-        }, {
-            where: { id: studentId }
+        const existStudent = await Student.findOne({
+            where:{id : studentId}
         })
-        if (updatedStudent) {
-            console.log("Student Updated Successfully");
-            return res.status(200).json(updatedStudent)
-        } else {
-            console.log("Student not Updated ");
-            return res.status(404).json({ message: "Student not Found" })
+        if(existStudent){
+            const updatedStudent = await editStudent({ Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id, studentId })
+            if (updatedStudent) {
+                console.log("Student Updated Successfully");
+                return res.status(200).json(updatedStudent)
+            } else {
+                console.log("Student not Updated ");
+                return res.status(404).json({ message: "Student not Found" })
+            }
+        }else{
+            return res.status(404).json({message:"Student not found"})
         }
     } catch (error) {
         console.log('Error updating Course :', error);
-        if (error.isJoi === true) {
-            return res.status(422).json({ error: error.message })
-        }
         return res.status(500).json({ error: error.message })
     }
 }
@@ -57,9 +52,7 @@ const updateStudent = async (req, res) => {
 const deleteStudent = async (req, res) => {
     const studentId = req.params.id;
     try {
-        const deletedStudent = await Student.destroy({
-            where: { id: studentId }
-        });
+        const deletedStudent = await removeStudent(studentId)
         if (deletedStudent) {
             res.status(204).json({ message: 'Student deleted successfully' });
         } else {
@@ -96,7 +89,7 @@ const studentWithCourses = async (req, res) => {
         const allStudents = await Student.findAll({
             attributes: ['Name', 'Email'],
             include: {
-                model: Courses,
+                model: Course,
                 attributes: ['Course_Name', 'Fee', 'Min_Year', 'Max_Year', 'Eligibility', 'Category'],
                 required: false
             }
@@ -118,7 +111,7 @@ const allStudentandAddress = async (req, res) => {
         const allStudents = await Student.findAll({
             attributes: ['Name', 'Email', 'DOB', 'Father_Name', 'Gender'],
             include: {
-                model: Addresses,
+                model: Address,
                 attributes: ['House_No', 'Pin', 'City', 'State', 'Country'],
                 required: false
             }
@@ -139,7 +132,7 @@ const studentWithNoAddress = async (req, res) => {
         const studentsWithOutAddresses = await Student.findAll({
             attributes: ['Name', 'Email', 'DOB', 'Father_Name', 'Gender', 'Course_Id'],
             include: {
-                model: Addresses,
+                model: Address,
                 attributes: [],
                 required: false
             }, where: {
@@ -163,7 +156,7 @@ const studentWithAddress = async (req, res) => {
         const studentsWithAddresses = await Student.findAll({
             attributes: ['Name', 'Email', 'DOB', 'Father_Name', 'Gender'],
             include: {
-                model: Addresses,
+                model: Address,
                 attributes: ['House_No', 'Pin', 'City', 'State', 'Country'],
                 required: true
             }, where: {
