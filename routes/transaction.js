@@ -16,13 +16,11 @@ router.post('/addAddressandStudent', inputValidate(transactionSchema), async (re
         return res.status(200).json('User added', student, address)
     } catch (error) {
         await transaction.rollback();
-        console.log('Error message', error);
         if (error.isJoi === true) {
             return res.status(400).json({ error:'Input data type is not correct'})
         }
         return res.status(500).json({ message: error.message })
     }
 })
-
 
 module.exports = router

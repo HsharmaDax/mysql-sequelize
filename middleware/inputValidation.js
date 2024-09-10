@@ -10,12 +10,10 @@ const inputValidate = (schema) => {
                 const idSchema = Joi.number().integer().required()
                 const idValidate = idSchema.validate(id);
                 if (idValidate.error) {
-                    console.error(idValidate.error.message);
                     return res.status(400).json({ error: 'Bad request' });
                 }
                 const { error: updateBodyError } = schema.validate(req.body);
                 if (updateBodyError) {
-                    console.error(updateBodyError.message);
                     return res.status(400).json({ error: 'Bad request' })
                 }
                 next();
@@ -23,7 +21,6 @@ const inputValidate = (schema) => {
             case 'POST':
                 const { error: postBodyError } = schema.validate(req.body);
                 if (postBodyError) {
-                    console.error(postBodyError.message);
                     return res.status(400).json({ error: 'Bad request' })
                 }
                 next();
@@ -34,7 +31,6 @@ const inputValidate = (schema) => {
                 const deleteIdSchema = Joi.number().integer().required()
                 const { error: deleteIdError } = deleteIdSchema.validate(deleteId);
                 if (deleteIdError) {
-                    console.error(deleteIdError.message);
                     return res.status(400).json({ error: 'Bad request' })
                 }
                 next();

@@ -28,7 +28,6 @@ const addAnswer = async (req, res) => {
             return res.status(404).json({ error: "This student does not exist" })
         }
     } catch (error) {
-        console.error(error.message);
         if (error.isJoi === true) {
             return res.status(422).json({ error: error.message })
         }
