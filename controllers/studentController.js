@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
 const db = require('../models/index');
 const { addStudent, editStudent, removeStudent } = require('../modularGenerator/studentModular');
 const { Student, Address, Course } = db;
@@ -28,13 +28,20 @@ const updateStudent = async (req, res) => {
     const studentId = req.params.id;
     const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = req.body;
     try {
-        const updatedStudent = await editStudent({ Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id, studentId })
-        if (updatedStudent) {
-            console.log("Student Updated Successfully");
-            return res.status(200).json(updatedStudent)
-        } else {
-            console.log("Student not Updated ");
-            return res.status(404).json({ message: "Student not Found" })
+        const existStudent = await Student.findOne({
+            where:{id : studentId}
+        })
+        if(existStudent){
+            const updatedStudent = await editStudent({ Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id, studentId })
+            if (updatedStudent) {
+                console.log("Student Updated Successfully");
+                return res.status(200).json(updatedStudent)
+            } else {
+                console.log("Student not Updated ");
+                return res.status(404).json({ message: "Student not Found" })
+            }
+        }else{
+            return res.status(404).json({message:"Student not found"})
         }
     } catch (error) {
         console.log('Error updating Course :', error);

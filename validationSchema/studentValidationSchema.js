@@ -10,7 +10,6 @@ const studentSchema = Joi.object({
     Course_Id: Joi.number().integer().required()
 })
 const updateStudentSchema = Joi.object({
-    id: Joi.number().integer().required(),
     Name: Joi.string(),
     Email: Joi.string().email(),
     DOB: Joi.date(),
@@ -18,6 +17,6 @@ const updateStudentSchema = Joi.object({
     Gender: Joi.string().valid('Male', 'Female', 'Other'),
     Address_Id: Joi.number().integer(),
     Course_Id: Joi.number().integer()
-}).xor('Name', 'Email', 'DOB', 'Father_Name', 'Gender', 'Address_Id', 'Course_Id')
+}).or('Name', 'Email', 'DOB', 'Father_Name', 'Gender', 'Address_Id', 'Course_Id')
 
 module.exports = { studentSchema, updateStudentSchema }

@@ -19,7 +19,6 @@ const editAddress = async ({ House_No, Pin, City, State, Country, addressId }) =
         }, {
             where: { id: addressId }
         })
-        console.log(addressUpdated)
         return addressUpdated;
     } catch (error) {
         console.error("Error creating address:", error.message);

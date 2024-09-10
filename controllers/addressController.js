@@ -1,4 +1,6 @@
+const { where } = require('sequelize');
 const db = require('../models/index');
+const { Address } = db;
 const { addAddress, editAddress, removeAddress } = require('../modularGenerator/addressModular')
 
 const insertAddress = async (req, res) => {
@@ -18,12 +20,19 @@ const updateAddress = async (req, res) => {
     const addressId = req.params.id;
     const { House_No, Pin, City, State, Country } = req.body;
     try {
-        const updatedAddress = await editAddress({ House_No, Pin, City, State, Country, addressId })
-        if (updatedAddress) {
-            console.log("Address Updated");
-            res.status(200).json("Address Updated Successfully");
-        } else {
-            res.status(404).json("Address not found")
+        const existAddress = await Address.findOne({
+            where: { id: addressId }
+        })
+        if (existAddress) {
+            const updatedAddress = await editAddress({ House_No, Pin, City, State, Country, addressId })
+            if (updatedAddress) {
+                console.log("Address Updated");
+                res.status(200).json("Address Updated Successfully");
+            } else {
+                res.status(404).json("Address not found")
+            }
+        }else{
+            return res.status(404).json({message:"Address not found"})
         }
     } catch (error) {
         console.log('Error updating address :', error);

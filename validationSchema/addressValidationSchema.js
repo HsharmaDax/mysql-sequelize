@@ -8,12 +8,11 @@ const addressSchema = Joi.object({
     Country: Joi.string().required()
 })
 const updateAddressSchema = Joi.object({
-    id: Joi.number().integer().required(),
     House_No: Joi.string(),
     Pin: Joi.number().integer(),
     City: Joi.string(),
     State: Joi.string(),
     Country: Joi.string()
-}).xor('House_No', 'Pin', 'City', 'State', 'Country')
+}).or('House_No', 'Pin', 'City', 'State', 'Country')
 
 module.exports = { addressSchema, updateAddressSchema }

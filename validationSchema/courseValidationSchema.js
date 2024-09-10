@@ -17,6 +17,6 @@ const updateCourseSchema = Joi.object({
     Max_Year: Joi.number(),
     Eligibility: Joi.string(),
     Category: Joi.string(),
-}).xor('Course_Name', 'Fee', 'Min_Year', 'Max_Year', 'Eligibility', 'Category')
+}).or('Course_Name', 'Fee', 'Min_Year', 'Max_Year', 'Eligibility', 'Category')
 
 module.exports = { courseSchema, updateCourseSchema }
