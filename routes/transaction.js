@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../models/index');
 const { transactionSchema } = require('../validationSchema/transactionValidateSchema');
-const { inputValidate } = require('../middleware/courseValidation');
+const { inputValidate } = require('../middleware/inputValidation');
 const { Student, Addresses } = db;
 
 router.post('/addAddressandStudent', inputValidate(transactionSchema), async (req, res) => {

@@ -8,6 +8,7 @@ const addressSchema = Joi.object({
     Country: Joi.string().required()
 })
 const updateAddressSchema = Joi.object({
+    id: Joi.number().integer().required(),
     House_No: Joi.string(),
     Pin: Joi.number().integer(),
     City: Joi.string(),

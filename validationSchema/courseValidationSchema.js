@@ -10,6 +10,7 @@ const courseSchema = Joi.object({
 })
 
 const updateCourseSchema = Joi.object({
+    id: Joi.number().integer().required(),
     Course_Name: Joi.string(),
     Fee: Joi.number(),
     Min_Year: Joi.number(),
@@ -18,4 +19,4 @@ const updateCourseSchema = Joi.object({
     Category: Joi.string(),
 }).xor('Course_Name', 'Fee', 'Min_Year', 'Max_Year', 'Eligibility', 'Category')
 
-module.exports = {courseSchema, updateCourseSchema }
+module.exports = { courseSchema, updateCourseSchema }
