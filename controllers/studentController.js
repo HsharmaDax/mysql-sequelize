@@ -14,7 +14,7 @@ const insertStudent = async (req, res) => {
             return res.status(409).json({ error: 'Student with this email already exist' })
         }
         const student = await addStudent({ Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id })
-        if (student) {
+        if (student>0) {
             console.log('Student Added', student);
             return res.status(201).json(student);
         }
@@ -33,7 +33,7 @@ const updateStudent = async (req, res) => {
         })
         if(existStudent){
             const updatedStudent = await editStudent({ Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id, studentId })
-            if (updatedStudent) {
+            if (updatedStudent>0) {
                 console.log("Student Updated Successfully");
                 return res.status(200).json(updatedStudent)
             } else {
