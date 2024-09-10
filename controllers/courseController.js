@@ -1,4 +1,3 @@
-const { where } = require('sequelize');
 const db = require('../models/index')
 const { Course, Student } = db;
 const { addCourse, editCourse, removeCourse } = require('../modularGenerator/courseModular');
@@ -53,8 +52,8 @@ const deleteCourse = async (req, res) => {
     const courseId = req.params.id;
     try {
         const deletedCourse = await removeCourse(courseId);
-        if (deletedCourse) {
-            res.status(204).json({ message: 'Course deleted successfully' });
+        if (deletedCourse>0) {
+            res.status(204).send();
         } else {
             res.status(404).json({ error: 'Course not found' });
         }

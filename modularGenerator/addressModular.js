@@ -31,7 +31,6 @@ const removeAddress = async (addressId) => {
         const addressDeleted = await Address.destroy({
             where: { id: addressId }
         })
-        console.log(addressDeleted)
         return addressDeleted;
     } catch (error) {
         console.error("Error creating address:", error.message);

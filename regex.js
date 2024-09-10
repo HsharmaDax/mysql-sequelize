@@ -15,7 +15,7 @@ async function example() {
 example();
 // const password = 'hrsH122@'
 // const pass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*$-_@!){8,16}/
-console.log(password.match(pass))
+// console.log(password.match(pass))
 const eachWord = str.split(' ');
 // console.log(eachWord);
 const pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
