@@ -6,6 +6,7 @@ const addAddress = async ({ House_No, Pin, City, State, Country }) => {
         const addressCreated = await Address.create({ House_No, Pin, City, State, Country });
         return addressCreated;
     } catch (error) {
+        console.log(error)
         return res.status(400).json(error)
     }
 }

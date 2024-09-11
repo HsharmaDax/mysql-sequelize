@@ -12,7 +12,7 @@ const insertCourse = async (req, res) => {
             return res.status(409).json({ error: 'This course data already added !!' })
         }
         const addedCourse = await addCourse({ Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category });
-        if (addedCourse > 0) {
+        if (addedCourse) {
             return res.status(201).json({ message: 'Course added' });
         }
     } catch (error) {

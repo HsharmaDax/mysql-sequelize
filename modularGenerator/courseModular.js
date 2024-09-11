@@ -6,7 +6,7 @@ const addCourse = async ({ Course_Name, Fee, Min_Year, Max_Year, Eligibility, Ca
         const courseCreated = await Course.create({ Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category });
         return courseCreated;
     } catch (error) {
-        return res.status(400).json(error)
+        console.log(error)
     }
 }
 
@@ -17,7 +17,7 @@ const editCourse = async ({ Course_Name, Fee, Min_Year, Max_Year, Eligibility, C
         }, { where: { id: courseId } });
         return editedCourse;
     } catch (error) {
-        return res.status(400).json(error)
+        console.log(error)
     }
 }
 

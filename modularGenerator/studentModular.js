@@ -6,7 +6,7 @@ const addStudent = async ({ Name, Email, DOB, Father_Name, Gender, Address_Id, C
         const studentAdded = await Student.create({ Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id });
         return studentAdded;
     } catch (error) {
-        return res.status(400).json(error)
+        console.log(error)
     }
 }
 

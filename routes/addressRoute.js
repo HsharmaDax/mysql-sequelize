@@ -5,7 +5,6 @@ const { addressSchema, updateAddressSchema } = require('../validationSchema/addr
 const paramSchema = require('../validationSchema/paramSchema');
 const router = express.Router();
 
-
 router.post('/insert', inputValidate(addressSchema), insertAddress);
 
 router.put('/update/:id', inputValidate(updateAddressSchema, paramSchema), updateAddress)

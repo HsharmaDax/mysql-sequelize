@@ -7,16 +7,17 @@ const insertStudent = async (req, res) => {
     try {
         const { Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id } = req.body;
         const existStudent = await Student.findOne({
-            where: { Email: Email }
+            where: { Email: Email }, paranoid: false
         })
         if (existStudent) {
             return res.status(409).json({ error: 'Student with this email already exist' })
         }
         const student = await addStudent({ Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id })
-        if (student > 0) {
-            return res.status(201).json(student);
+        if (student) {
+            return res.status(201).json({ message: "Student Added" });
         }
     } catch (error) {
+        console.log(error.message)
         res.status(500).json({ error: error });
     }
 }

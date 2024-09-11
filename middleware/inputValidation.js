@@ -1,7 +1,7 @@
 const Joi = require("joi");
 const status400 = require("../modularGenerator/resModular");
 
-const inputValidate = (schema , paramSchema) => {
+const inputValidate = (schema, paramSchema) => {
     return (req, res, next) => {
         const method = req.method;
         switch (method) {
@@ -10,33 +10,31 @@ const inputValidate = (schema , paramSchema) => {
                 const paramsValidate = paramSchema.validate(data);
                 if (paramsValidate.error) {
                     console.log(paramsValidate.error.message)
-                    return status400('Bad request')
+                    return status400(res, 'Bad request')
                 }
                 const { error: updateBodyError } = schema.validate(req.body);
                 if (updateBodyError) {
-                    return status400('Bad request')
+                    return status400(res, 'Bad request')
                 }
-                next();
                 break;
             case 'POST':
                 const { error: postBodyError } = schema.validate(req.body);
                 if (postBodyError) {
-                    return status400('Bad request')
+                    return status400(res, 'Bad request')
                 }
-                next();
                 break;
             case 'DELETE':
-                const deletedata = req.params;
-                const { error: deleteIdError } = schema.validate(deletedata);
+                const paramsData = req.params;
+                const { error: deleteIdError } = schema.validate(paramsData);
                 if (deleteIdError) {
-                    return status400('Bad request')
+                    return status400(res, 'Bad request')
                 }
-                next();
                 break;
             case 'GET':
 
                 break;
         }
+        next();
     }
 }
 

@@ -6,7 +6,7 @@ const insertAddress = async (req, res) => {
     try {
         const { House_No, Pin, City, State, Country } = req.body;
         const address = await addAddress({ House_No, Pin, City, State, Country });
-        if (address > 0) {
+        if (address) {
             return res.status(201).json({ message: 'Address added' });
         }
     } catch (error) {

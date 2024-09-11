@@ -1,4 +1,4 @@
 
-const status400 = (msg)=> res.status(400).json({message:`${msg}`})
+const status400 = (res,msg)=> res.status(400).json({message:`${msg}`})
 
-module.exports = status400
+module.exports = status400 
