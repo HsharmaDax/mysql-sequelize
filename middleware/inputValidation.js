@@ -1,37 +1,35 @@
 const Joi = require("joi");
+const status400 = require("../modularGenerator/resModular");
 
-const inputValidate = (schema) => {
+const inputValidate = (schema , paramSchema) => {
     return (req, res, next) => {
         const method = req.method;
         switch (method) {
             case 'PUT':
                 const data = req.params;
-                const id = data.id;
-                const idSchema = Joi.number().integer().required()
-                const idValidate = idSchema.validate(id);
-                if (idValidate.error) {
-                    return res.status(400).json({ error: 'Bad request' });
+                const paramsValidate = paramSchema.validate(data);
+                if (paramsValidate.error) {
+                    console.log(paramsValidate.error.message)
+                    return status400('Bad request')
                 }
                 const { error: updateBodyError } = schema.validate(req.body);
                 if (updateBodyError) {
-                    return res.status(400).json({ error: 'Bad request' })
+                    return status400('Bad request')
                 }
                 next();
                 break;
             case 'POST':
                 const { error: postBodyError } = schema.validate(req.body);
                 if (postBodyError) {
-                    return res.status(400).json({ error: 'Bad request' })
+                    return status400('Bad request')
                 }
                 next();
                 break;
             case 'DELETE':
                 const deletedata = req.params;
-                const deleteId = deletedata.id;
-                const deleteIdSchema = Joi.number().integer().required()
-                const { error: deleteIdError } = deleteIdSchema.validate(deleteId);
+                const { error: deleteIdError } = schema.validate(deletedata);
                 if (deleteIdError) {
-                    return res.status(400).json({ error: 'Bad request' })
+                    return status400('Bad request')
                 }
                 next();
                 break;
