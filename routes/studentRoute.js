@@ -3,12 +3,13 @@ const router = express.Router();
 const { updateStudent, insertStudent, deleteStudent, allStudentandAddress, deletedStudents, studentWithCourses, studentWithNoAddress, studentWithAddress } = require('../controllers/studentController');
 const { inputValidate } = require('../middleware/inputValidation');
 const { studentSchema, updateStudentSchema } = require('../validationSchema/studentValidationSchema');
+const paramSchema = require('../validationSchema/paramSchema');
 
 router.post('/insert', inputValidate(studentSchema), insertStudent);
 
-router.put('/update/:id', inputValidate(updateStudentSchema ) , updateStudent);
+router.put('/update/:id', inputValidate(updateStudentSchema,paramSchema ) , updateStudent);
 
-router.delete('/delete/:id', deleteStudent)
+router.delete('/delete/:id', inputValidate(paramSchema) ,deleteStudent)
 
 router.get('/studen', allStudentandAddress);
 

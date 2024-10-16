@@ -1,31 +1,41 @@
 const Joi = require("joi");
+const status400 = require("../modularGenerator/resModular");
 
-const inputValidate = (schema) => {
+const inputValidate = (schema, paramSchema) => {
     return (req, res, next) => {
-        const method = req.method
-        if (method === 'PUT') {
-            const { id } = req.params;
-            const idSchema = Joi.number().integer().required()
-            const idValidate = idSchema.validate(id);
-            console.log(idValidate)
-            if (idValidate.error) {
-                console.error(idValidate.error.message);
-                return res.status(400).json({ error: 'Bad request' });
-            }
-            const { error } = schema.validate(req.body);
-            if (error) {
-                console.error(error.message);
-                return res.status(400).json({ error: 'Bad request' })
-            }
-            next();
-        } else {
-            const { error } = schema.validate(req.body);
-            if (error) {
-                console.error(error.message);
-                return res.status(400).json({ error: 'Bad request' })
-            }
-            next();
+        const method = req.method;
+        const paramsData = req.params;
+        switch (method) {
+            case 'PUT':
+                const paramsValidate = paramSchema.validate(paramsData);
+                if (paramsValidate.error) {
+                    console.log(paramsValidate.error.message)
+                    return status400(res, 'Bad request')
+                }
+                const { error: updateBodyError } = schema.validate(req.body);
+                if (updateBodyError) {
+                    console.log(updateBodyError.message)
+                    return status400(res, 'Bad request')
+                }
+                break;
+            case 'POST':
+                const { error: postBodyError } = schema.validate(req.body);
+                if (postBodyError) {
+                    console.log(postBodyError.message)                    
+                    return status400(res, 'Bad request')
+                }
+                break;
+            case 'DELETE':
+                const { error: deleteIdError } = schema.validate(paramsData);
+                if (deleteIdError) {
+                    return status400(res, 'Bad request')
+                }
+                break;
+            case 'GET':
+
+                break;
         }
+        next();
     }
 }
 
