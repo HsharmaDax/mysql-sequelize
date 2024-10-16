@@ -19,7 +19,7 @@ const editStudent = async ({ Name, Email, DOB, Father_Name, Gender, Address_Id, 
         });
         return studentUpdated;
     } catch (error) {
-        return res.status(400).json(error)
+        console.log(error)
     }
 }
 
@@ -30,7 +30,7 @@ const removeStudent = async (studentId) => {
         });
         return studentDeleted;
     } catch (error) {
-        return res.status(400).json(error)
+        console.log(error)
     }
 }
 

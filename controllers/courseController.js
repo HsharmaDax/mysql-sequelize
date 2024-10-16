@@ -14,6 +14,8 @@ const insertCourse = async (req, res) => {
         const addedCourse = await addCourse({ Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category });
         if (addedCourse) {
             return res.status(201).json({ message: 'Course added' });
+        } else {
+            return res.status(500).json({ message: "Error adding course" })
         }
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
@@ -31,12 +33,14 @@ const updateCourse = async (req, res) => {
             const updatedCourse = await editCourse({ Course_Name, Fee, Min_Year, Max_Year, Eligibility, Category, courseId })
             if (updatedCourse > 0) {
                 return res.status(200).json({ message: "Course updated Successfully" })
+            } else {
+                return res.status(500).json({ message: "Error updating course" })
             }
         } else {
             return res.status(404).json("Course not found")
         }
     } catch (error) {
-        return res.status(500).json({ error: 'Internal server error'})
+        return res.status(500).json({ error: 'Internal server error' })
     }
 }
 

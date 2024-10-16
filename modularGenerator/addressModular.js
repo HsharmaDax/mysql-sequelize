@@ -7,7 +7,6 @@ const addAddress = async ({ House_No, Pin, City, State, Country }) => {
         return addressCreated;
     } catch (error) {
         console.log(error)
-        return res.status(400).json(error)
     }
 }
 
@@ -20,7 +19,7 @@ const editAddress = async ({ House_No, Pin, City, State, Country, addressId }) =
         })
         return addressUpdated;
     } catch (error) {
-        return res.status(400).json(error)
+        console.log(error)
     }
 }
 
@@ -31,7 +30,7 @@ const removeAddress = async (addressId) => {
         })
         return addressDeleted;
     } catch (error) {
-        return res.status(400).json(error)
+        console.log(error)
     }
 }
 

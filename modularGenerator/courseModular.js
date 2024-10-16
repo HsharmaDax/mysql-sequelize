@@ -28,9 +28,8 @@ const removeCourse = async (courseId) => {
         });
         return courseDeleted;
     } catch (error) {
-        return res.status(400).json(error)
+        console.log(error)
     }
 }
-
 
 module.exports = { addCourse, editCourse, removeCourse }

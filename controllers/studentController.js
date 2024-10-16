@@ -15,6 +15,8 @@ const insertStudent = async (req, res) => {
         const student = await addStudent({ Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id })
         if (student) {
             return res.status(201).json({ message: "Student Added" });
+        } else {
+            return res.status(500).json({ message: "Some error occured" })
         }
     } catch (error) {
         console.log(error.message)
@@ -33,6 +35,8 @@ const updateStudent = async (req, res) => {
             const updatedStudent = await editStudent({ Name, Email, DOB, Father_Name, Gender, Address_Id, Course_Id, studentId })
             if (updatedStudent > 0) {
                 return res.status(200).json({ message: "Student updated" })
+            } else {
+                return res.status(500).json({ message: "Error updating student" })
             }
         } else {
             return res.status(404).json({ message: "Student not found" })
@@ -45,10 +49,18 @@ const updateStudent = async (req, res) => {
 const deleteStudent = async (req, res) => {
     const studentId = req.params.id;
     try {
-        const deletedStudent = await removeStudent(studentId)
-        if (deletedStudent > 0) {
-            return res.status(204).send();
-        } else {
+        const existStudent = await Student.findOne({
+            where: { id: studentId }
+        })
+        if (existStudent) {
+            const deletedStudent = await removeStudent(studentId)
+            if (deletedStudent > 0) {
+                return res.status(204).send();
+            } else {
+                return res.status(500).json({ message: 'Some error occured' })
+            }
+        }
+        else {
             return res.status(404).json({ error: 'Student not found' });
         }
     } catch (error) {
